@@ -17,6 +17,7 @@ class EmailController extends Controller
 
     public function send(Request $request)
     {
+
         $email = new Mail();
         $email->setFrom("contacto@sisadesel.com.mx");
         $email->setSubject("Sending with Twilio SendGrid is Fun"); //asucto email
@@ -26,7 +27,7 @@ class EmailController extends Controller
             "text/html",
             "<strong>and easy to do anywhere, even with PHP</strong>"
         );
-        
+
         $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
         try {
             $response = $sendgrid->send($email);
@@ -38,18 +39,20 @@ class EmailController extends Controller
         }
     }
 
-    public function sendMultiple()
+    public function sendMultiple($arg)
     {
         $email = new Mail();
         $email->setFrom("contacto@sisadesel.com.mx", "Contacto sisadesel");
+        $tos = $arg;
+        /*
         $tos = [
             "adhel1997@gmail.com" => "Adelaida Molina",
             "adelaida.molinar1997@gmail.com" => "adheel",
             "hzhm1997@gmail.com" => "Heber Zabdiel"
-        ];
+        ];*/
         $email->addTos($tos);
         $email->setSubject("ENVIO CORREO DE PRUEBA");
-      //  $email->addContent("text/plain", "and easy to do anywhere, even with PHP");
+        //  $email->addContent("text/plain", "and easy to do anywhere, even with PHP");
         $email->addContent(
             "text/html",
             "<strong> Correo enviado de prueba. este correo se recibio correctamente</strong>"
@@ -63,5 +66,25 @@ class EmailController extends Controller
         } catch (Exception $e) {
             echo 'Caught exception: ' .  $e->getMessage() . "\n";
         }
+    }
+
+    public function getEmails(Request $request)
+    {
+        $request->validate(
+            [
+                'correos' => 'required',
+            ],
+            ['correos.required' => 'You need add emails ']
+        );
+
+        //revisar codigo ascii mac, en windows "\n" 
+        //method trim() php online quiet end  and start spacie 
+        $quit_spacie = str_replace("\r", "", $request->correos);
+        $arg_emails =  explode("\n", $quit_spacie);
+        
+      //  $this->sendMultiple($arg_emails);
+
+        // return $arg_emails;
+
     }
 }

@@ -11,31 +11,25 @@
 </head>
 
 <body>
-    <section class="space-ptb">
+    <section class="">
         <div class="container ">
             <div class="container">
                 <div class="row ">
                     <div class="col-md-12">
                         <form action="{!! route('email.multipleSend') !!}" method="post" enctype="multipart/form-data" class="row g-3">
                             @csrf
-                            <div class="col-md-6">
-                                <label for="inputEmail4" class="form-label">Name:</label>
-                                <input name="name"  value="" autocomplete="off" class="form-control" id="inputEmail4">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="inputEmail4" class="form-label">Email:</label>
-                                <input name="email"  value="" autocomplete="off" class="form-control" id="inputEmail4">
-                            </div>
-
                             <div class="col-12">
-                                <label for="inputAddress" class="form-label">Message</label>
-                                <textarea name="msg" id="description" class="form-control " cols="30" rows="20" >
-                    {!! old('msg')??"" !!}
-                    </textarea>
+                                <label for="inputAddress" class="form-label ">Email</label>
+                                <textarea name="correos" class="form-control " cols="30" rows="20">
+                                {!! old('msg')??"" !!}
+                               </textarea>
                             </div>
+                            @error('correos')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
 
                             <div class="col-12 mt-2">
-                                <button type="submit" class="btn btn-warning">Send</button>
+                                <button type="submit" class="btn btn-success">Send</button>
                             </div>
                         </form>
                     </div>
@@ -44,7 +38,7 @@
         </div>
     </section>
 
- 
+
 
 </body>
 
