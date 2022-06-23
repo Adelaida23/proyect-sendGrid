@@ -59,7 +59,8 @@ class EmailController extends Controller
         );
         $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
         try {
-            $response = $sendgrid->send($email);
+         //   $response = $sendgrid->send
+            $response = $sendgrid->send($email); 
             // return back()->with('success', "Send emails correctly \n". $response->statusCode() . "\n");
             return back()->with('success', "Send emails correctly \n"); // . $response->statusCode() . "\n");
             //  print $response->statusCode() . "\n";
@@ -87,7 +88,6 @@ class EmailController extends Controller
         for ($i = 0; $i < count($arg_emails); $i++) {
             $arg_final[$arg_emails[$i]] = ""; //nombres vacios
         }
-        // return back()->with('success', "Send emails correctly \n" . "\n");
         // return $arg_final;
         $this->sendMultiple($arg_final);
     }
