@@ -60,11 +60,14 @@ class EmailController extends Controller
         $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
         try {
             $response = $sendgrid->send($email);
-            print $response->statusCode() . "\n";
-            print_r($response->headers());
-            print $response->body() . "\n";
+            // return back()->with('success', "Send emails correctly \n". $response->statusCode() . "\n");
+            return back()->with('success', "Send emails correctly \n"); // . $response->statusCode() . "\n");
+            //  print $response->statusCode() . "\n";
+            //  print_r($response->headers());
+            //  print $response->body() . "\n";
         } catch (Exception $e) {
-            echo 'Caught exception: ' .  $e->getMessage() . "\n";
+            return back()->with('error', 'Caught exception: ' .  $e->getMessage() . "\n");
+            //  echo 'Caught exception: ' .  $e->getMessage() . "\n";
         }
     }
 
@@ -76,15 +79,16 @@ class EmailController extends Controller
             ],
             ['correos.required' => 'You need add emails ']
         );
-
         //revisar codigo ascii mac, en windows "\n" 
         //method trim() php online quiet end  and start spacie 
-        $quit_spacie = str_replace("\r", "", $request->correos);
-        $arg_emails =  explode("\n", $quit_spacie);
-        
-      //  $this->sendMultiple($arg_emails);
-
-        // return $arg_emails;
-
+        $arg_final = null;
+        $texto_emails = str_replace("\r", "",  str_replace(" ", "", $request->correos));
+        $arg_emails =  explode("\n", $texto_emails);
+        for ($i = 0; $i < count($arg_emails); $i++) {
+            $arg_final[$arg_emails[$i]] = ""; //nombres vacios
+        }
+        // return back()->with('success', "Send emails correctly \n" . "\n");
+        // return $arg_final;
+        $this->sendMultiple($arg_final);
     }
 }
