@@ -14,6 +14,7 @@
                         <div class="col-md-12 mx-auto text-center ">
                             <form action="{!! route('email.multipleSend') !!}" method="post" enctype="multipart/form-data" class="row g-3">
                                 @csrf
+
                                 <div class="col-4">
                                     <label for="inputAddress" class="form-label ">Platform </label>
                                     <select class="form-select" name="platform" aria-label="Default select example">
@@ -25,6 +26,18 @@
                                 @error('platform')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
+
+                                <div class="col-8">
+                                </div>
+
+                                <div class="col-6">
+                                    <label for="inputSubject" class="form-label ">Subject </label>
+                                    <input type="text" id="inputSubject" name="subject" class="form-control">
+                                </div>
+                                @error('subject')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
                                 <div class="">
                                     <label for="inputAddress" class="form-label ">Message to send </label>
                                     <textarea name="message" id="message_id" class="form-control border border-primary" cols="30" rows="10" value="{!! old('message')??'' !!}" placeholder="Type messages to send">{!! old('correos')??"" !!}</textarea>
@@ -32,6 +45,7 @@
                                 @error('message')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
+
                                 <div class="">
                                     <label for="inputAddress" class="form-label ">Email's to send </label>
                                     <textarea name="correos" class="form-control border border-primary" cols="30" rows="10" value="{!! old('correos')??'' !!}" placeholder="Type emails">{!! old('correos')??"" !!}</textarea>
@@ -39,9 +53,11 @@
                                 @error('correos')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
+
                                 <div class="col-12 mt-2">
                                     <button type="submit" class="btn btn-primary">Send</button>
                                 </div>
+
                             </form>
                         </div>
                     </div>

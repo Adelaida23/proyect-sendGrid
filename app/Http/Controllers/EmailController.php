@@ -84,32 +84,36 @@ class EmailController extends Controller
     {
         $request->validate(
             [
-                'correos' => 'required',
-                'message' => 'required',
-                'platform'  => 'required'
+                'correos'  => 'required',
+                'message'  => 'required',
+                'platform' => 'required',
+                'subject'  => 'required'
             ],
             [
                 'correos.required' => 'You need add emails ',
-                'message' => 'You need add messages to send',
-                'platform' => 'You need select one platform'
+                'message'          => 'You need add messages to send',
+                'platform'         => 'You need select one platform',
+                'subject'          => 'You need add the subject'
             ]
         );
-        $message = $request->message;
-        // return $message;
-        $platform = $request->platform;
-        $subject = "SENDS MESSAGES PLATFORM SISADESEL";
-        $listEmails = null;
+        $message      = $request->message;
+        $platform     = $request->platform;
+        $subject      = $request->subject;
         $texto_emails = str_replace("\r", "",  str_replace(" ", "", $request->correos));
-        $listEmails =  explode("\n", $texto_emails);
-        //dd($arg_emails);
+        $listEmails   =  explode("\n", $texto_emails);
+
         if ($platform ==  1) {
+
             $this->sendWithSendGrid($subject, $message,  $listEmails);
+
         }
         if ($platform ==  2) {
 
             $this->sendMailGun($subject, $message, $listEmails);
+
         }
-        return view('formEmail');
+
+        return redirect()->route('form.email');
     }
 
     public function sendMailGun($subject, $message, $listEmails)
