@@ -15,10 +15,13 @@ class EmailController extends Controller
     {
         return view('formEmail');
     }
+    /*
     public function send(Request $request)
     {
         $email = new Mail();
-        $email->setFrom("contacto@sisadesel.com.mx");
+        //$email->setFrom("contacto@sisadesel.com.mx");
+        $email->setFrom(env('MAIL_FROM_NAME'));
+      //  $from_email = env('MAIL_FROM_ADDRESS');
         $email->setSubject("Sending with Twilio SendGrid is Fun"); //asucto email
         $email->addTo("adhel1997@gmail.com", "Example User"); //receptor: first: email, second: name
         //$email->addContent("text/plain", "and easy to do anywhere, even with PHP"); // message second param
@@ -36,15 +39,16 @@ class EmailController extends Controller
         } catch (Exception $e) {
             echo 'Caught exception: ' .  $e->getMessage() . "\n";
         }
-    }
+    }*/
 
-    public function sendWithSendGrid($listEmails,  $message)
+    public function sendWithSendGrid($subject, $message,  $listEmails)
     {
         $email = new Mail();
-        $email->setFrom("contacto@sisadesel.com.mx", "Contacto sisadesel");
+       // $email->setFrom("contacto@sisadesel.com.mx", "Contacto sisadesel");
+        $email->setFrom(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
         $tos = $listEmails;
         $email->addTos($tos);
-        $email->setSubject("ENVIO CORREO DE PRUEBA");
+        $email->setSubject($subject);
         //  $email->addContent("text/plain", "and easy to do anywhere, even with PHP");
         /*
         $email->addContent(
@@ -84,15 +88,24 @@ class EmailController extends Controller
         );
         $message = $request->message;
         $platform = $request->platform;
+        $subject = "ENVIOS TEST";
         $listEmails = null;
         $texto_emails = str_replace("\r", "",  str_replace(" ", "", $request->correos));
         $arg_emails =  explode("\n", $texto_emails);
         for ($i = 0; $i < count($arg_emails); $i++) {
             $listEmails[$arg_emails[$i]] = ""; //nombres vacios
         }
-        return $platform;
-        //$this->sendWithSendGrid($listEmails, $message, $platform);
+        //  return $platform;
+        if ($platform ==  1) {
+            //   $this->sendWithSendGrid($listEmails, $message, $platform);
+            $this->sendWithSendGrid($subject, $message,  $listEmails);
+        }
+        if ($platform ==  2) {
+            $this->sendMailGun($subject, $message, $listEmails);
+        }
+        return view('formEmail');
     }
+
     //Borrar o sustuir función
     public function sendMails(Request $request)
     {
@@ -104,22 +117,21 @@ class EmailController extends Controller
         $subject    = 'Test Mailgun version 2';
         $platform   = 'mailGun';
 
-        $this->mailSender( $platform, $message, $subject, $listEmails );
+        $this->mailSender($platform, $message, $subject, $listEmails);
     }
 
-    public function mailSender( $platform, $message, $subject, $listEmails )
+    public function mailSender($platform, $message, $subject, $listEmails)
     {
 
-        if ( $platform ==  'mailGun' ){
+        if ($platform ==  'mailGun') {
 
-            $this->sendMailGun( $subject, $message, $listEmails );
+            $this->sendMailGun($subject, $message, $listEmails);
 
             return true;
         }
-
     }
 
-    public function sendMailGun( $subject, $message, $listEmails )
+    public function sendMailGun($subject, $message, $listEmails)
     {
         $mailClient = Mailgun::create(env('API_KEY_MAILGUN'));
         $domain     = env('DOMAIN_NAME_MAILGUN');
@@ -127,13 +139,11 @@ class EmailController extends Controller
         $from_email = env('MAIL_FROM_ADDRESS');
 
         $result = $mailClient->messages()->send($domain, [
-            'from'	  => $from_name.' <'.$from_email.'>',
-            'to'	  => $listEmails,
+            'from'      => $from_name . ' <' . $from_email . '>',
+            'to'      => $listEmails,
             'subject' => $subject,
-            'html'	  => $message
+            'html'      => $message
         ]);
-
         return true;
     }
-
 }
