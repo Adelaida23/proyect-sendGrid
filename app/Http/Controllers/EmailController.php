@@ -43,20 +43,27 @@ class EmailController extends Controller
 
     public function sendWithSendGrid($subject, $message,  $listEmails)
     {
+        $listEmails2 = null;
+        for ($i = 0; $i < count($listEmails); $i++) {
+            $listEmails2[$listEmails[$i]] = ""; //nombres vacios
+        }
         $email = new Mail();
-       // $email->setFrom("contacto@sisadesel.com.mx", "Contacto sisadesel");
-        $email->setFrom(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
-        $tos = $listEmails;
+        $email->setFrom("contacto@sisadesel.com.mx", "Contacto sisadesel");
+        // $email->setFrom(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
+       // $tos = $listEmails;
+        $tos = $listEmails2;
         $email->addTos($tos);
         $email->setSubject($subject);
         //  $email->addContent("text/plain", "and easy to do anywhere, even with PHP");
+
         /*
         $email->addContent(
             "text/html",
             "<strong> Correo enviado de prueba. este correo se recibio correctamente</strong>"
         );
         */
-        $email->addContent($message);
+
+        $email->addContent("text/html", $message);
         $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
         try {
             //   $response = $sendgrid->send
@@ -68,8 +75,8 @@ class EmailController extends Controller
             print_r($response->headers());
             print $response->body() . "\n";
         } catch (Exception $e) {
-            return back()->with('error', 'Caught exception: ' .  $e->getMessage() . "\n");
-            //  echo 'Caught exception: ' .  $e->getMessage() . "\n";
+            //  return back()->with('error', 'Caught exception: ' .  $e-    >getMessage() . "\n");
+            echo 'Caught exception: ' .  $e->getMessage() . "\n";
         }
     }
 
@@ -88,17 +95,14 @@ class EmailController extends Controller
             ]
         );
         $message = $request->message;
+        // return $message;
         $platform = $request->platform;
         $subject = "ENVIOS TEST";
         $listEmails = null;
         $texto_emails = str_replace("\r", "",  str_replace(" ", "", $request->correos));
         $listEmails =  explode("\n", $texto_emails);
-        /*for ($i = 0; $i < count($arg_emails); $i++) {
-            $listEmails[$arg_emails[$i]] = ""; //nombres vacios
-        }*/
         //dd($arg_emails);
         if ($platform ==  1) {
-            //   $this->sendWithSendGrid($listEmails, $message, $platform);
             $this->sendWithSendGrid($subject, $message,  $listEmails);
         }
         if ($platform ==  2) {
@@ -124,6 +128,5 @@ class EmailController extends Controller
         ]);
 
         return true;
-
     }
 }
