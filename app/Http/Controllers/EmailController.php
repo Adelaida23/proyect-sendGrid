@@ -14,10 +14,8 @@ class EmailController extends Controller
     {
         return view('formEmail');
     }
-
     public function send(Request $request)
     {
-
         $email = new Mail();
         $email->setFrom("contacto@sisadesel.com.mx");
         $email->setSubject("Sending with Twilio SendGrid is Fun"); //asucto email
@@ -59,8 +57,8 @@ class EmailController extends Controller
         );
         $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
         try {
-         //   $response = $sendgrid->send
-            $response = $sendgrid->send($email); 
+            //   $response = $sendgrid->send
+            $response = $sendgrid->send($email);
             // return back()->with('success', "Send emails correctly \n". $response->statusCode() . "\n");
             return back()->with('success', "Send emails correctly \n"); // . $response->statusCode() . "\n");
             //  print $response->statusCode() . "\n";
