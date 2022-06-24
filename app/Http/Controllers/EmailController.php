@@ -60,12 +60,13 @@ class EmailController extends Controller
         $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
         try {
             //   $response = $sendgrid->send
+
             $response = $sendgrid->send($email);
             // return back()->with('success', "Send emails correctly \n". $response->statusCode() . "\n");
-            return back()->with('success', "Send emails correctly \n"); // . $response->statusCode() . "\n");
-            //  print $response->statusCode() . "\n";
-            //  print_r($response->headers());
-            //  print $response->body() . "\n";
+            //return back()->with('success', "Send emails correctly \n"); // . $response->statusCode() . "\n");
+            print $response->statusCode() . "\n";
+            print_r($response->headers());
+            print $response->body() . "\n";
         } catch (Exception $e) {
             return back()->with('error', 'Caught exception: ' .  $e->getMessage() . "\n");
             //  echo 'Caught exception: ' .  $e->getMessage() . "\n";
@@ -91,48 +92,25 @@ class EmailController extends Controller
         $subject = "ENVIOS TEST";
         $listEmails = null;
         $texto_emails = str_replace("\r", "",  str_replace(" ", "", $request->correos));
-        $arg_emails =  explode("\n", $texto_emails);
-        for ($i = 0; $i < count($arg_emails); $i++) {
+        $listEmails =  explode("\n", $texto_emails);
+        /*for ($i = 0; $i < count($arg_emails); $i++) {
             $listEmails[$arg_emails[$i]] = ""; //nombres vacios
-        }
-        //  return $platform;
+        }*/
+        //dd($arg_emails);
         if ($platform ==  1) {
             //   $this->sendWithSendGrid($listEmails, $message, $platform);
             $this->sendWithSendGrid($subject, $message,  $listEmails);
         }
         if ($platform ==  2) {
+
             $this->sendMailGun($subject, $message, $listEmails);
         }
         return view('formEmail');
     }
 
-    //Borrar o sustuir función
-    public function sendMails(Request $request)
-    {
-        $listEmails = [
-            'chessed03@gmail.com',
-            'worktestmail00@gmail.com'
-        ];
-        $message    = '<b>Code HTML!</b><h5>Cabecera de tipo H5</h5><h6>Cabecera de tipo H6</h6>';
-        $subject    = 'Test Mailgun version 2';
-        $platform   = 'mailGun';
-
-        $this->mailSender($platform, $message, $subject, $listEmails);
-    }
-
-    public function mailSender($platform, $message, $subject, $listEmails)
-    {
-
-        if ($platform ==  'mailGun') {
-
-            $this->sendMailGun($subject, $message, $listEmails);
-
-            return true;
-        }
-    }
-
     public function sendMailGun($subject, $message, $listEmails)
     {
+
         $mailClient = Mailgun::create(env('API_KEY_MAILGUN'));
         $domain     = env('DOMAIN_NAME_MAILGUN');
         $from_name  = env('MAIL_FROM_NAME');
@@ -140,10 +118,12 @@ class EmailController extends Controller
 
         $result = $mailClient->messages()->send($domain, [
             'from'      => $from_name . ' <' . $from_email . '>',
-            'to'      => $listEmails,
-            'subject' => $subject,
+            'to'        => $listEmails,
+            'subject'   => $subject,
             'html'      => $message
         ]);
+
         return true;
+
     }
 }
