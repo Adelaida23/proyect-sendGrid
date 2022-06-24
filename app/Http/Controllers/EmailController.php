@@ -70,10 +70,10 @@ class EmailController extends Controller
 
             $response = $sendgrid->send($email);
             // return back()->with('success', "Send emails correctly \n". $response->statusCode() . "\n");
-            //return back()->with('success', "Send emails correctly \n"); // . $response->statusCode() . "\n");
-            print $response->statusCode() . "\n";
-            print_r($response->headers());
-            print $response->body() . "\n";
+            return back()->with('success', "Send emails correctly \n"); // . $response->statusCode() . "\n");
+            //print $response->statusCode() . "\n";
+            //print_r($response->headers());
+            //print $response->body() . "\n";
         } catch (Exception $e) {
             //  return back()->with('error', 'Caught exception: ' .  $e-    >getMessage() . "\n");
             echo 'Caught exception: ' .  $e->getMessage() . "\n";
@@ -97,7 +97,7 @@ class EmailController extends Controller
         $message = $request->message;
         // return $message;
         $platform = $request->platform;
-        $subject = "ENVIOS TEST";
+        $subject = "SENDS MESSAGES PLATFORM SISADESEL";
         $listEmails = null;
         $texto_emails = str_replace("\r", "",  str_replace(" ", "", $request->correos));
         $listEmails =  explode("\n", $texto_emails);
