@@ -29,7 +29,7 @@ Route::get('/enviarEmail', function () {
 Route::get('view-form', [EmailController::class, 'formEmail'])->name('form.email');
 //Route::get('enviar/email', [EmailController::class, 'enviarEmail'])->name('email.enviar');
 Route::post('enviar/email', [EmailController::class, 'send'])->name('email.enviar');
-Route::post('enviar/multipleEmail', [EmailController::class, 'getEmails'])->name('email.multipleSend');
+Route::post('enviar/multipleEmail', [EmailController::class, 'getParams'])->name('email.multipleSend');
 
 /*
 Route::get('/testEmail', function(){

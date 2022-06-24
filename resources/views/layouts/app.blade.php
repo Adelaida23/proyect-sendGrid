@@ -13,6 +13,9 @@
     <!-- STYLE CSS -->
     <link href="{{asset('assets/css/style.css')}}" rel="stylesheet" />
 
+    <!--tinymce -->
+    <script src="{{ asset('tinymce/tinymce.min.js') }}"></script>
+
 </head>
 
 <body>
@@ -21,10 +24,7 @@
     @yield('content')
     @yield('header')
 
-
-    <!-- BOOTSTRAP JS -->
-    <script src="../../assets/plugins/bootstrap/js/popper.min.js"></script>
-    <script src="{!! asset(" assets/plugins/bootstrap/js/bootstrap.min.js") !!}"></script>
+    @yield('javascript')
 
 
 </body>

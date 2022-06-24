@@ -15,10 +15,8 @@ class EmailController extends Controller
     {
         return view('formEmail');
     }
-
     public function send(Request $request)
     {
-
         $email = new Mail();
         $email->setFrom("contacto@sisadesel.com.mx");
         $email->setSubject("Sending with Twilio SendGrid is Fun"); //asucto email
@@ -40,27 +38,24 @@ class EmailController extends Controller
         }
     }
 
-    public function sendMultiple($arg)
+    public function sendWithSendGrid($listEmails,  $message)
     {
         $email = new Mail();
         $email->setFrom("contacto@sisadesel.com.mx", "Contacto sisadesel");
-        $tos = $arg;
-        /*
-        $tos = [
-            "adhel1997@gmail.com" => "Adelaida Molina",
-            "adelaida.molinar1997@gmail.com" => "adheel",
-            "hzhm1997@gmail.com" => "Heber Zabdiel"
-        ];*/
+        $tos = $listEmails;
         $email->addTos($tos);
         $email->setSubject("ENVIO CORREO DE PRUEBA");
         //  $email->addContent("text/plain", "and easy to do anywhere, even with PHP");
+        /*
         $email->addContent(
             "text/html",
             "<strong> Correo enviado de prueba. este correo se recibio correctamente</strong>"
         );
+        */
+        $email->addContent($message);
         $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
         try {
-         //   $response = $sendgrid->send
+            //   $response = $sendgrid->send
             $response = $sendgrid->send($email);
             // return back()->with('success', "Send emails correctly \n". $response->statusCode() . "\n");
             return back()->with('success', "Send emails correctly \n"); // . $response->statusCode() . "\n");
@@ -73,24 +68,30 @@ class EmailController extends Controller
         }
     }
 
-    public function getEmails(Request $request)
+    public function getParams(Request $request)
     {
         $request->validate(
             [
                 'correos' => 'required',
+                'message' => 'required',
+                'platform'  => 'required'
             ],
-            ['correos.required' => 'You need add emails ']
+            [
+                'correos.required' => 'You need add emails ',
+                'message' => 'You nedd add messages to send',
+                'platform' => 'You need select one platform'
+            ]
         );
-        //revisar codigo ascii mac, en windows "\n"
-        //method trim() php online quiet end  and start spacie
-        $arg_final = null;
+        $message = $request->message;
+        $platform = $request->platform;
+        $listEmails = null;
         $texto_emails = str_replace("\r", "",  str_replace(" ", "", $request->correos));
         $arg_emails =  explode("\n", $texto_emails);
         for ($i = 0; $i < count($arg_emails); $i++) {
-            $arg_final[$arg_emails[$i]] = ""; //nombres vacios
+            $listEmails[$arg_emails[$i]] = ""; //nombres vacios
         }
-        // return $arg_final;
-        $this->sendMultiple($arg_final);
+        return $platform;
+        //$this->sendWithSendGrid($listEmails, $message, $platform);
     }
     //Borrar o sustuir función
     public function sendMails(Request $request)
