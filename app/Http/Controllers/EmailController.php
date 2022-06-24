@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use SendGrid;
 use SendGrid\Mail\Mail;
 use App\Mail\TestEmail;
+use ClaseMailGun;
+use ClaseSenderGrid;
 use Mailgun\Mailgun;
+use MailSender;
 
 class EmailController extends Controller
 {
@@ -50,7 +53,7 @@ class EmailController extends Controller
         $email = new Mail();
         $email->setFrom("contacto@sisadesel.com.mx", "Contacto sisadesel");
         // $email->setFrom(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
-       // $tos = $listEmails;
+        // $tos = $listEmails;
         $tos = $listEmails2;
         $email->addTos($tos);
         $email->setSubject($subject);
@@ -103,14 +106,16 @@ class EmailController extends Controller
         $listEmails   =  explode("\n", $texto_emails);
 
         if ($platform ==  1) {
-
-            $this->sendWithSendGrid($subject, $message,  $listEmails);
-
+          //  $mail_sendr = new MailSender();
+            $obj = new ClaseSenderGrid();
+            $obj->senderEmail($subject, $message,  $listEmails);
+            // $this->sendWithSendGrid($subject, $message,  $listEmails);
         }
         if ($platform ==  2) {
+            $obj2 = new ClaseMailGun();
+            $obj2->senderEmail($subject, $message,  $listEmails);
 
-            $this->sendMailGun($subject, $message, $listEmails);
-
+           // $this->sendMailGun($subject, $message, $listEmails);
         }
 
         return redirect()->route('form.email');
@@ -118,19 +123,16 @@ class EmailController extends Controller
 
     public function sendMailGun($subject, $message, $listEmails)
     {
-
         $mailClient = Mailgun::create(env('API_KEY_MAILGUN'));
         $domain     = env('DOMAIN_NAME_MAILGUN');
         $from_name  = env('MAIL_FROM_NAME');
         $from_email = env('MAIL_FROM_ADDRESS');
-
         $result = $mailClient->messages()->send($domain, [
             'from'      => $from_name . ' <' . $from_email . '>',
             'to'        => $listEmails,
             'subject'   => $subject,
             'html'      => $message
         ]);
-
         return true;
     }
 }
