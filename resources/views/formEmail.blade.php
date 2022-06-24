@@ -15,16 +15,23 @@
                             <form action="{!! route('email.multipleSend') !!}" method="post" enctype="multipart/form-data" class="row g-3">
                                 @csrf
                                 <div class="col-4">
-                                    <select class="form-select" aria-label="Default select example">
+                                    <label for="inputAddress" class="form-label ">Platform </label>
+                                    <select class="form-select" name="platform" aria-label="Default select example" required = "required">
                                         <option selected>Select one platform</option>
                                         <option value="1">Send Grid</option>
                                         <option value="2">Mail Gun</option>
                                     </select>
                                 </div>
+                                @error('platform')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
                                 <div class="">
                                     <label for="inputAddress" class="form-label ">Message to send </label>
                                     <textarea name="message" id="message_id" class="form-control border border-primary" cols="30" rows="10" value="{!! old('message')??'' !!}" placeholder="Type messages to send">{!! old('correos')??"" !!}</textarea>
                                 </div>
+                                @error('message')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
                                 <div class="">
                                     <label for="inputAddress" class="form-label ">Email's to send </label>
                                     <textarea name="correos" class="form-control border border-primary" cols="30" rows="10" value="{!! old('correos')??'' !!}" placeholder="Type emails">{!! old('correos')??"" !!}</textarea>
@@ -52,9 +59,8 @@
 
 <script src="{{asset('tinymce/tinymce.min.js')}}"></script>
 <script>
-
-tinymce.init({
-        selector:"#message_id",
+    tinymce.init({
+        selector: "#message_id",
         relative_urls: false,
         force_br_newlines: false,
         force_p_newlines: false,
@@ -66,7 +72,7 @@ tinymce.init({
             "advlist autolink lists link image charmap print preview anchor",
             "searchreplace visualblocks code fullscreen",
             "insertdatetime media table paste",
-            "mention"
+            // "mention"
         ],
         //    menubar: 'table',
         toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | image code | table tabledelete | tableprops tablerowprops tablecellprops | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
