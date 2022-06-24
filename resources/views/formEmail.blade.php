@@ -16,8 +16,8 @@
                                 @csrf
                                 <div class="col-4">
                                     <label for="inputAddress" class="form-label ">Platform </label>
-                                    <select class="form-select" name="platform" aria-label="Default select example" required = "required">
-                                        <option selected>Select one platform</option>
+                                    <select class="form-select" name="platform" aria-label="Default select example">
+                                        <option value="" selected>Select one platform</option>
                                         <option value="1">Send Grid</option>
                                         <option value="2">Mail Gun</option>
                                     </select>

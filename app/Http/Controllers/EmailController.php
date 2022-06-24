@@ -90,7 +90,7 @@ class EmailController extends Controller
             ],
             [
                 'correos.required' => 'You need add emails ',
-                'message' => 'You nedd add messages to send',
+                'message' => 'You need add messages to send',
                 'platform' => 'You need select one platform'
             ]
         );
