@@ -19,8 +19,9 @@
                                     <label for="inputAddress" class="form-label ">Platform </label>
                                     <select class="form-select" name="platform" aria-label="Default select example">
                                         <option value="" selected>Select one platform</option>
-                                        <option value="1">Send Grid</option>
-                                        <option value="2">Mail Gun</option>
+                                        <option value="sendGrid">Send Grid</option>
+                                        <option value="mailGun">Mail Gun</option>
+                                        <option value="elasticEmail">Elastic Email</option>
                                     </select>
                                 </div>
                                 @error('platform')
